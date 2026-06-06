@@ -1,3 +1,3 @@
 #! /bin/bash
 source ./.venv/bin/activate
-python -m pytest -v .
+python -m black . --check
