@@ -578,6 +578,3 @@ def run_server(host="localhost", port=8000):
         print("\nServer stopped")
         httpd.server_close()
 
-
-if __name__ == "__main__":
-    run_server()
