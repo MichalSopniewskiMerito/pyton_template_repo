@@ -12,3 +12,49 @@ extend-exclude = '''
   | dist
 )/
 '''
+
+[tool.pylint.main]
+py-version = "3.12"
+jobs = 0
+recursive = true
+ignore-paths = ["^\\.venv/", "^build/", "^dist/"]
+fail-under = 9.5
+
+[tool.pylint.format]
+max-line-length = 120
+
+[tool.pylint."messages control"]
+enable = [
+  "all",
+]
+disable = [
+  "raw-checker-failed",
+  "bad-inline-option",
+  "locally-disabled",
+  "file-ignored",
+  "suppressed-message",
+  "useless-suppression",
+  "deprecated-pragma",
+  "use-symbolic-message-instead",
+]
+
+[tool.pylint.design]
+max-args = 5
+max-attributes = 7
+max-bool-expr = 4
+max-branches = 10
+max-locals = 12
+max-parents = 5
+max-public-methods = 15
+max-returns = 4
+max-statements = 35
+min-public-methods = 1
+
+[tool.pylint.typecheck]
+ignore-none = false
+
+[tool.pylint.similarities]
+min-similarity-lines = 4
+ignore-comments = true
+ignore-docstrings = false
+ignore-imports = false
