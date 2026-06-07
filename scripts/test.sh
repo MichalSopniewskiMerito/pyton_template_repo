@@ -1,3 +1,3 @@
 #! /bin/bash
 source .venv/bin/activate
-python3 main.py --port 8080
+python -m pytest -v .
