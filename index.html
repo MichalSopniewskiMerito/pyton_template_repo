@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Shop REST API</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 20px;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+
+        .status {
+            display: inline-block;
+            background: #27ae60;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section h2 {
+            color: #667eea;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .endpoint-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .endpoint {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 5px solid #667eea;
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+
+        .endpoint:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.2);
+        }
+
+        .endpoint.get {
+            border-left-color: #3498db;
+        }
+
+        .endpoint.post {
+            border-left-color: #27ae60;
+        }
+
+        .endpoint.put {
+            border-left-color: #f39c12;
+        }
+
+        .endpoint.delete {
+            border-left-color: #e74c3c;
+        }
+
+        .method {
+            font-weight: bold;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            color: white;
+            display: inline-block;
+            margin-right: 10px;
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .get {
+            background: #3498db;
+        }
+
+        .post {
+            background: #27ae60;
+        }
+
+        .put {
+            background: #f39c12;
+        }
+
+        .delete {
+            background: #e74c3c;
+        }
+
+        .path {
+            font-family: 'Courier New', monospace;
+            background: rgba(0, 0, 0, 0.1);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .description {
+            color: #555;
+            margin: 10px 0;
+            line-height: 1.5;
+        }
+
+        .request-body {
+            background: #f9f9f9;
+            border-left: 3px solid #667eea;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .feature {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .feature-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .feature h3 {
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #f0f0f0;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .info-box {
+            background: #e8f4f8;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        .info-box strong {
+            color: #3498db;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            font-weight: bold;
+        }
+
+        tr:hover {
+            background: #f5f5f5;
+        }
+
+        .tag {
+            display: inline-block;
+            background: #f0f0f0;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>🛍️ Shop REST API</h1>
+            <p class="subtitle">A complete REST API for e-commerce with products, shopping cart, and orders</p>
+            <span class="status">✓ Online</span>
+        </header>
+
+        <div class="info-box">
+            <strong>ℹ️ Quick Links:</strong>
+            📚 <a href="#products">Products API</a> |
+            🛒 <a href="#cart">Cart API</a> |
+            📋 <a href="#orders">Orders API</a> |
+            📖 View SHOP_API.md or CURL_EXAMPLES.md for more details
+        </div>
+
+        <div class="section">
+            <h2>✨ Key Features</h2>
+            <div class="features-grid">
+                <div class="feature">
+                    <div class="feature-icon">📦</div>
+                    <h3>Products</h3>
+                    <p>Full CRUD operations with inventory tracking</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🛒</div>
+                    <h3>Shopping Cart</h3>
+                    <p>Add, update, and manage cart items</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">📋</div>
+                    <h3>Orders</h3>
+                    <p>Create and track customer orders</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">💾</div>
+                    <h3>Persistence</h3>
+                    <p>SQLite database for data storage</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">📊</div>
+                    <h3>Stock Management</h3>
+                    <p>Automatic inventory updates</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">📝</div>
+                    <h3>Logging</h3>
+                    <p>Complete request/response logging</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" id="products">
+            <h2>📦 Products Endpoints</h2>
+            <div class="endpoint-group">
+                <div class="endpoint get">
+                    <span class="method get">GET</span>
+                    <div class="path">/api/products</div>
+                    <div class="description">List all products in catalog</div>
+                    <div class="request-body">$ curl http://localhost:8000/api/products</div>
+                    <div class="tag">Returns: Array of products</div>
+                </div>
+
+                <div class="endpoint get">
+                    <span class="method get">GET</span>
+                    <div class="path">/api/products/:id</div>
+                    <div class="description">Get specific product by ID</div>
+                    <div class="request-body">$ curl http://localhost:8000/api/products/1</div>
+                    <div class="tag">Returns: Single product</div>
+                </div>
+
+                <div class="endpoint post">
+                    <span class="method post">POST</span>
+                    <div class="path">/api/products</div>
+                    <div class="description">Create a new product</div>
+                    <div class="tag">Required: name, price</div>
+                    <div class="tag">Optional: description, stock</div>
+                    <div class="request-body">{"name":"Laptop","price":999.99,"stock":10,"description":"..."}</div>
+                </div>
+
+                <div class="endpoint put">
+                    <span class="method put">PUT</span>
+                    <div class="path">/api/products/:id</div>
+                    <div class="description">Update product details</div>
+                    <div class="tag">Fields: name, price, stock, description</div>
+                    <div class="request-body">{"price":899.99,"stock":15}</div>
+                </div>
+
+                <div class="endpoint delete">
+                    <span class="method delete">DELETE</span>
+                    <div class="path">/api/products/:id</div>
+                    <div class="description">Delete a product</div>
+                    <div class="request-body">$ curl -X DELETE http://localhost:8000/api/products/1</div>
+                    <div class="tag">Returns: Confirmation</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" id="cart">
+            <h2>🛒 Shopping Cart Endpoints</h2>
+            <div class="endpoint-group">
+                <div class="endpoint get">
+                    <span class="method get">GET</span>
+                    <div class="path">/api/cart</div>
+                    <div class="description">View all items in cart with totals</div>
+                    <div class="request-body">$ curl http://localhost:8000/api/cart</div>
+                    <div class="tag">Returns: Cart items + total</div>
+                </div>
+
+                <div class="endpoint post">
+                    <span class="method post">POST</span>
+                    <div class="path">/api/cart</div>
+                    <div class="description">Add item to shopping cart</div>
+                    <div class="tag">Required: product_id, quantity</div>
+                    <div class="tag">Validates: Stock availability</div>
+                    <div class="request-body">{"product_id":1,"quantity":2}</div>
+                </div>
+
+                <div class="endpoint put">
+                    <span class="method put">PUT</span>
+                    <div class="path">/api/cart/:id</div>
+                    <div class="description">Update item quantity in cart</div>
+                    <div class="tag">Required: quantity</div>
+                    <div class="request-body">{"quantity":5}</div>
+                </div>
+
+                <div class="endpoint delete">
+                    <span class="method delete">DELETE</span>
+                    <div class="path">/api/cart/:id</div>
+                    <div class="description">Remove item from cart</div>
+                    <div class="request-body">$ curl -X DELETE http://localhost:8000/api/cart/1</div>
+                    <div class="tag">Returns: Confirmation</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" id="orders">
+            <h2>📋 Orders Endpoints</h2>
+            <div class="endpoint-group">
+                <div class="endpoint get">
+                    <span class="method get">GET</span>
+                    <div class="path">/api/orders</div>
+                    <div class="description">List all orders</div>
+                    <div class="request-body">$ curl http://localhost:8000/api/orders</div>
+                    <div class="tag">Returns: Array of orders</div>
+                </div>
+
+                <div class="endpoint get">
+                    <span class="method get">GET</span>
+                    <div class="path">/api/orders/:id</div>
+                    <div class="description">Get order details with items</div>
+                    <div class="request-body">$ curl http://localhost:8000/api/orders/1</div>
+                    <div class="tag">Returns: Order + line items</div>
+                </div>
+
+                <div class="endpoint post">
+                    <span class="method post">POST</span>
+                    <div class="path">/api/orders</div>
+                    <div class="description">Create order from cart</div>
+                    <div class="tag">Required: customer_name</div>
+                    <div class="tag">Optional: customer_email</div>
+                    <div class="tag">Clears cart and updates stock</div>
+                    <div class="request-body">{"customer_name":"John Doe","customer_email":"john@example.com"}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📊 Data Model</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Table</th>
+                        <th>Description</th>
+                        <th>Purpose</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>products</strong></td>
+                        <td>Product catalog with pricing & stock</td>
+                        <td>Store product information and inventory</td>
+                    </tr>
+                    <tr>
+                        <td><strong>cart</strong></td>
+                        <td>Shopping cart items</td>
+                        <td>Temporary storage of items before checkout</td>
+                    </tr>
+                    <tr>
+                        <td><strong>orders</strong></td>
+                        <td>Customer orders with totals</td>
+                        <td>Record completed purchases</td>
+                    </tr>
+                    <tr>
+                        <td><strong>order_items</strong></td>
+                        <td>Line items per order</td>
+                        <td>Store purchased products and quantities</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>🚀 Quick Start Examples</h2>
+            <div class="info-box">
+                <strong>1. Create a product:</strong>
+                <div class="request-body">curl -X POST http://localhost:8000/api/products -H "Content-Type:
+                    application/json" -d '{"name":"Laptop","price":999.99,"stock":10}'</div>
+            </div>
+            <div class="info-box">
+                <strong>2. Add to cart:</strong>
+                <div class="request-body">curl -X POST http://localhost:8000/api/cart -H "Content-Type:
+                    application/json" -d '{"product_id":1,"quantity":2}'</div>
+            </div>
+            <div class="info-box">
+                <strong>3. View cart:</strong>
+                <div class="request-body">curl http://localhost:8000/api/cart</div>
+            </div>
+            <div class="info-box">
+                <strong>4. Create order:</strong>
+                <div class="request-body">curl -X POST http://localhost:8000/api/orders -H "Content-Type:
+                    application/json" -d '{"customer_name":"John Doe"}'</div>
+            </div>
+        </div>
+
+        <footer>
+            <strong>Shop REST API v1.0</strong><br>
+            Database: <code>shop.db</code> | Logs: <code>shop_api.log</code><br>
+            Built with Python's http.server module | SQLite Database<br>
+            <small>© 2026 Testing Course | All endpoints return JSON responses</small>
+        </footer>
+    </div>
+</body>
+
+</html>
