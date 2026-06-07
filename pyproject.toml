@@ -1,0 +1,12 @@
+[tool.black]
+line-length = 120
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+    \.venv
+  | venv
+  | build
+  | dist
+  | __pycache__
+)/
+'''
