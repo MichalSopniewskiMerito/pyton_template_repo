@@ -22,7 +22,7 @@ jobs:
           python-version: "3.12"
 
       - name: Create virtualenv and install dependencies
-        run: bash scripts/create_venv.sh
+        run: bash scripts/init_env.sh
 
       - name: Format check
         run: bash scripts/format_check.sh
