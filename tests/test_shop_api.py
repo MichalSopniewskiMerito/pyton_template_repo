@@ -72,9 +72,7 @@ def test_create_and_get_product(base_url):
 
 
 def test_create_product_missing_required_fields(base_url):
-    response = requests.post(
-        f"{base_url}/api/products", json={"description": "No name and price"}, timeout=3
-    )
+    response = requests.post(f"{base_url}/api/products", json={"description": "No name and price"}, timeout=3)
     assert response.status_code == 400
     assert "Missing required fields" in response.json()["error"]
 
@@ -98,9 +96,7 @@ def test_update_product(base_url):
 def test_delete_product(base_url):
     product_id = create_product(base_url)
 
-    delete_response = requests.delete(
-        f"{base_url}/api/products/{product_id}", timeout=3
-    )
+    delete_response = requests.delete(f"{base_url}/api/products/{product_id}", timeout=3)
     assert delete_response.status_code == 200
 
     get_response = requests.get(f"{base_url}/api/products/{product_id}", timeout=3)

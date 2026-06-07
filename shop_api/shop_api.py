@@ -46,8 +46,7 @@ def init_database():
         cursor = conn.cursor()
 
         # Products table
-        cursor.execute(
-            """
+        cursor.execute("""
             CREATE TABLE IF NOT EXISTS products (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL,
@@ -56,12 +55,10 @@ def init_database():
                 stock INTEGER DEFAULT 0,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
-            """
-        )
+            """)
 
         # Shopping cart table
-        cursor.execute(
-            """
+        cursor.execute("""
             CREATE TABLE IF NOT EXISTS cart (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 product_id INTEGER NOT NULL,
@@ -69,12 +66,10 @@ def init_database():
                 added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (product_id) REFERENCES products(id)
             )
-            """
-        )
+            """)
 
         # Orders table
-        cursor.execute(
-            """
+        cursor.execute("""
             CREATE TABLE IF NOT EXISTS orders (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 customer_name TEXT NOT NULL,
@@ -83,12 +78,10 @@ def init_database():
                 status TEXT DEFAULT 'pending',
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
-            """
-        )
+            """)
 
         # Order items table
-        cursor.execute(
-            """
+        cursor.execute("""
             CREATE TABLE IF NOT EXISTS order_items (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 order_id INTEGER NOT NULL,
@@ -98,8 +91,7 @@ def init_database():
                 FOREIGN KEY (order_id) REFERENCES orders(id),
                 FOREIGN KEY (product_id) REFERENCES products(id)
             )
-            """
-        )
+            """)
 
         logger.info("Database initialized successfully")
 
@@ -307,9 +299,7 @@ class ShopAPIHandler(BaseHTTPRequestHandler):
                 return
 
             params.append(product_id)
-            cursor.execute(
-                f"UPDATE products SET {', '.join(updates)} WHERE id = ?", params
-            )
+            cursor.execute(f"UPDATE products SET {', '.join(updates)} WHERE id = ?", params)
             self.send_json_response({"id": product_id, "message": "Product updated"})
             logger.info(f"Updated product: {product_id}")
 
@@ -331,19 +321,15 @@ class ShopAPIHandler(BaseHTTPRequestHandler):
         """GET /api/cart - Get shopping cart"""
         with get_db() as conn:
             cursor = conn.cursor()
-            cursor.execute(
-                """
+            cursor.execute("""
                 SELECT c.id, c.product_id, c.quantity, p.name, p.price,
                        (c.quantity * p.price) as subtotal
                 FROM cart c
                 JOIN products p ON c.product_id = p.id
-                """
-            )
+                """)
             items = [dict(row) for row in cursor.fetchall()]
             total = sum(item["subtotal"] for item in items)
-            self.send_json_response(
-                {"items": items, "total": total, "count": len(items)}
-            )
+            self.send_json_response({"items": items, "total": total, "count": len(items)})
 
     def add_to_cart(self, data):
         """POST /api/cart - Add item to cart"""
@@ -355,9 +341,7 @@ class ShopAPIHandler(BaseHTTPRequestHandler):
             cursor = conn.cursor()
 
             # Check product exists
-            cursor.execute(
-                "SELECT stock FROM products WHERE id = ?", (data["product_id"],)
-            )
+            cursor.execute("SELECT stock FROM products WHERE id = ?", (data["product_id"],))
             product = cursor.fetchone()
             if not product:
                 self.send_json_error("Product not found", 404)
@@ -381,9 +365,7 @@ class ShopAPIHandler(BaseHTTPRequestHandler):
                 },
                 201,
             )
-            logger.info(
-                f"Added to cart: product {data['product_id']}, qty {data['quantity']}"
-            )
+            logger.info(f"Added to cart: product {data['product_id']}, qty {data['quantity']}")
 
     def update_cart_item(self, item_id, data):
         """PUT /api/cart/<id> - Update cart item quantity"""
@@ -399,9 +381,7 @@ class ShopAPIHandler(BaseHTTPRequestHandler):
                 self.send_json_error("Cart item not found", 404)
                 return
 
-            cursor.execute(
-                "UPDATE cart SET quantity = ? WHERE id = ?", (data["quantity"], item_id)
-            )
+            cursor.execute("UPDATE cart SET quantity = ? WHERE id = ?", (data["quantity"], item_id))
             self.send_json_response({"id": item_id, "quantity": data["quantity"]})
             logger.info(f"Updated cart item {item_id}")
 
@@ -463,13 +443,11 @@ class ShopAPIHandler(BaseHTTPRequestHandler):
             cursor = conn.cursor()
 
             # Get cart items
-            cursor.execute(
-                """
+            cursor.execute("""
                 SELECT c.id, c.product_id, c.quantity, p.price, p.stock
                 FROM cart c
                 JOIN products p ON c.product_id = p.id
-                """
-            )
+                """)
             cart_items = cursor.fetchall()
 
             if not cart_items:
@@ -479,9 +457,7 @@ class ShopAPIHandler(BaseHTTPRequestHandler):
             # Check stock for all items
             for item in cart_items:
                 if item["stock"] < item["quantity"]:
-                    self.send_json_error(
-                        f"Insufficient stock for product {item['product_id']}", 400
-                    )
+                    self.send_json_error(f"Insufficient stock for product {item['product_id']}", 400)
                     return
 
             # Calculate total
